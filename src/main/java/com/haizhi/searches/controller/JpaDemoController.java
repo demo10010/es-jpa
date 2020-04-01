@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
-@Api(description = "mybatis demo控制层")
-@RequestMapping("/testBoot")
-public class DemoController {
+@Api(description = "jpa demo控制层")
+@RequestMapping("/testJpa")
+public class JpaDemoController {
     @Autowired
     private ItemRepository itemRepository;
 
@@ -45,7 +45,6 @@ public class DemoController {
         return "";
     }
 
-
     @GetMapping("getItemPage/{name}")
     @ApiOperation(value = "根据id进行查询")
     public Page<Item> getItemPage(@PathVariable String name) {
@@ -57,7 +56,7 @@ public class DemoController {
     @GetMapping("findBySql")
     @ApiOperation(value = "根据id进行查询")
     public List<Item> findBySql() {
-        Stream<Item> item = itemRepository.findItemByBrandAndAndImagesOrName();
+        Stream<Item> item = itemRepository.findItemByBrandAndImagesOrName("brand","","");
         List<Item> collect = item.collect(Collectors.toList());
         return collect;
     }

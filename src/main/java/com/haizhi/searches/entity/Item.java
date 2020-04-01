@@ -6,6 +6,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.Date;
+
 @Data
 @Document(indexName = "item", type = "docs", shards = 1, replicas = 0)
 public class Item {
@@ -13,7 +15,7 @@ public class Item {
     private Long id;
 
     @Field(type = FieldType.Text, analyzer = "ik_max_word")//
-    private String title; //标题
+    private String title; // 标题
 
     @Field(type = FieldType.Keyword)
     private String name;
@@ -29,4 +31,9 @@ public class Item {
 
     @Field(index = false, type = FieldType.Keyword)
     private String images; // 图片地址
+
+    @Field(index = false, type = FieldType.Date)
+    private Date date; //
+
+
 }
