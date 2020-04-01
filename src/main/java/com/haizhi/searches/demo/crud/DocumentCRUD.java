@@ -40,30 +40,7 @@ public class DocumentCRUD {
     private BBossESStarter bbossESStarter;
 
     public void testCreateIndice() {
-        //创建加载配置文件的客户端工具，单实例多线程安全
-        ClientInterface clientUtil = bbossESStarter.getConfigRestClient("esmapper/demo.xml");
-        try {
-            //判读索引表demo是否存在，存在返回true，不存在返回false
-            boolean exist = clientUtil.existIndice("demo");
 
-            //如果索引表demo已经存在先删除mapping
-            if (exist) {
-                String r = clientUtil.dropIndice("demo");
-                log.info("index--[demo] drop result ：", r);
-                exist = clientUtil.existIndice("demo");
-                log.info("index--[demo] exist ：", exist);
-                String demoIndice = clientUtil.getIndice("demo");//获取最新建立的索引表结构
-                log.info("index--[demo] struct：", demoIndice);
-            }
-            //创建索引表demo TODO 使用jpa创建更方便
-            clientUtil.createIndiceMapping("demo","createDemoIndice");//索引表mapping dsl脚本名称，在esmapper/demo.xml中定义createDemoIndice
-
-            String demoIndice = clientUtil.getIndice("demo");//获取最新建立的索引表结构
-            System.out.println(demoIndice);
-        } catch (ElasticSearchException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     public void updateDemoIndice() {

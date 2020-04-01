@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
@@ -23,6 +24,9 @@ import java.util.stream.Stream;
 public class JpaDemoController {
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
 
     @GetMapping("getAllItem")
     @ApiOperation(value = "查询全部")
@@ -68,6 +72,16 @@ public class JpaDemoController {
         Iterator<Item> iterator = items.iterator();
         items.forEach(item -> itemRepository.save(item));
         return "";
+    }
+
+    @GetMapping("createIndex")
+    @ApiOperation(value = "创建索引及type")
+    public boolean createIndex() {
+        // 创建索引，会根据Item类的@Document注解信息来创建
+        elasticsearchTemplate.createIndex(Item.class);
+        // 配置映射，会根据Item类中的id、Field等字段来自动完成映射
+        boolean success = elasticsearchTemplate.putMapping(Item.class);
+        return success;
     }
 
 }

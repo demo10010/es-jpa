@@ -1,77 +1,57 @@
 package com.haizhi.searches.controller;
 
-import com.haizhi.searches.demo.crud.DocumentCRUD;
+import com.haizhi.searches.entity.SqlDemoDoc;
+import com.haizhi.searches.entity.SqlDemoDocQo;
+import com.haizhi.searches.service.SqlDemoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.frameworkset.elasticsearch.boot.BBossESStarter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Api(description = "bboss demo工程")
 @RequestMapping("/testSql")
 public class SqlDemoController {
-
     @Autowired
-    private BBossESStarter bbossESStarter;
-//
-    @Autowired
-    private DocumentCRUD documentCRUD;
+    private SqlDemoService sqlDemoService;
 
-    @GetMapping("bboss demo工程")
-    @ApiOperation(value = "查询全部")
-    public String testIndixCurd() throws Exception {
-        //判读索引是否存在，false表示不存在，正常返回true表示存在
-        boolean existIndice = bbossESStarter.getRestClient().existIndice("twitter");
-        boolean existIndiceType = bbossESStarter.getRestClient().existIndiceType("twitter", "tweet");
-
-        //删除/创建文档索引表
-        documentCRUD.testCreateIndice();
-        //添加/修改单个文档
-        documentCRUD.testAddAndUpdateDocument();
-        //批量添加文档
-        documentCRUD.testBulkAddDocument();
-        //检索文档
-        documentCRUD.testSearch();
-        //批量修改文档
-        documentCRUD.testBulkUpdateDocument();
-
-        //检索批量修改后的文档
-        documentCRUD.testSearch();
-        //带list复杂参数的文档检索操作
-        documentCRUD.testSearchArray();
-        //带from/size分页操作的文档检索操作
-        documentCRUD.testPagineSearch();
-        //带sourcefilter的文档检索操作
-        documentCRUD.testSearchSourceFilter();
-
-        documentCRUD.updateDemoIndice();
-        documentCRUD.testBulkAddDocuments();
-        return "";
+    @PostMapping("/addDoc")
+    @ApiOperation(value = "新增")
+    public String addDoc(@RequestBody List<SqlDemoDocQo> docs) {
+        return sqlDemoService.addDoc(docs);
     }
 
-    public void testBbossESStarter() throws Exception {
-        //验证环境,获取es状态
-//        String response = serviceApiUtil.restClient().executeHttp("_cluster/state?pretty",ClientInterface.HTTP_GET);
-
-//        System.out.println(response);
-        //判断索引类型是否存在，false表示不存在，正常返回true表示存在
-        boolean exist = bbossESStarter.getRestClient().existIndiceType("twitter","tweet");
-
-        //判读索引是否存在，false表示不存在，正常返回true表示存在
-        exist =  bbossESStarter.getRestClient().existIndice("twitter");
-
-        exist =  bbossESStarter.getRestClient().existIndice("agentinfo");
-
+    @PostMapping("/delDoc")
+    @ApiOperation(value = "删除")
+    public Boolean delDoc(@RequestBody SqlDemoDocQo doc) {
+        return sqlDemoService.delDoc(doc);
     }
 
-    public void testPerformaceCRUD() throws Exception {
-
-        //删除/创建文档索引表
-        documentCRUD.testCreateIndice();
-
-        documentCRUD.testBulkAddDocuments();
+    @PostMapping("/updateDoc")
+    @ApiOperation(value = "修改")
+    public String updateDoc(@RequestBody List<SqlDemoDocQo> docs) {
+        return sqlDemoService.updateDocs(docs);
     }
+
+    @PostMapping("/queryOneDoc")
+    @ApiOperation(value = "单条查询")
+    public SqlDemoDoc queryOneDoc(@RequestBody SqlDemoDocQo doc) {
+        return sqlDemoService.queryOneDoc(doc);
+    }
+
+    @PostMapping("/queryMultiDoc")
+    @ApiOperation(value = "多条查询")
+    public String queryMultiDocs(@RequestBody List<SqlDemoDocQo> docs) {
+        return sqlDemoService.queryMultiDocs(docs);
+    }
+
+    @PostMapping("/createIndexAndType")
+    @ApiOperation(value = "创建索引及type，设置setting和mapping")
+    public String createIndexAndType(String indexName) {
+        return sqlDemoService.createIndexAndType(indexName);
+    }
+
+
 }
