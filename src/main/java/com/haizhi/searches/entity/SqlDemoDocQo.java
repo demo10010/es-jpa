@@ -4,6 +4,7 @@ package com.haizhi.searches.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.frameworkset.orm.annotation.Column;
 import com.frameworkset.orm.annotation.ESId;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,14 +36,12 @@ public class SqlDemoDocQo{
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(dataformat = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(example = "2020-01-01 12:18:48")
     protected Date agentStarttime;
 
-    public Date getAgentStarttimezh() {
-        return agentStarttimezh;
-    }
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    @Column(dataformat = "yyyy-MM-dd HH:mm:ss.SSS")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(dataformat = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(example = "2020-01-01 12:18:48")
     protected Date agentStarttimezh;
 
     private String applicationName;

@@ -6,7 +6,10 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.frameworkset.elasticsearch.boot.BBossESStarter;
+import org.frameworkset.elasticsearch.client.ClientInterface;
 import org.frameworkset.util.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +27,9 @@ public class ElasticsearchTemplateConf {
 
     @Value("${elasticsearch.cluster-name}")
     private String clusterName;
+
+    @Autowired
+    private BBossESStarter bbossESStarter;
 
     private static final int tcpPort = 9300;
 
@@ -50,4 +56,11 @@ public class ElasticsearchTemplateConf {
         ElasticsearchTemplate template = new ElasticsearchTemplate(client);
         return template;
     }
+
+    @Bean
+    public ClientInterface bossRestClient() {
+        //创建创建/修改/获取/删除文档的客户端对象，单实例多线程安全
+        return bbossESStarter.getRestClient();
+    }
+
 }

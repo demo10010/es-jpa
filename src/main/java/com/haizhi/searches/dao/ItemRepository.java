@@ -17,7 +17,7 @@ public interface ItemRepository extends ElasticsearchRepository<Item, Long> {
 
     //TODO  需编写DSL
     @Query("{\"bool\" : {\"must\" : {\"term\" : {\"title\" : \"?0\"}}}}")
-    Page<Item> findByNamePage(String title, Pageable page);
+    Page<Item> findByTitlePage(String title, Pageable page);
 
     Stream<Item> findItemByBrandAndImagesOrName(String brand,String images,String name);//JAVA8流
 

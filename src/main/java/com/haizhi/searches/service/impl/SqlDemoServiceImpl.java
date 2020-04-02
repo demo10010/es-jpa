@@ -28,63 +28,63 @@ public class SqlDemoServiceImpl implements SqlDemoService {
 
     @Autowired
     private BBossESStarter bbossESStarter;
+
+    @Autowired
+    private ClientInterface clientInterface;
     //
     @Autowired
     private DocumentCRUD documentCRUD;
 
     @Override
     public String addDoc(List<SqlDemoDocQo> docs) {
-        //创建创建/修改/获取/删除文档的客户端对象，单实例多线程安全
-        ClientInterface clientUtil = bbossESStarter.getRestClient();
 //        clientUtil.addDocument(INDEX_NAME, TYPE_NAME, items.get(0));//单条新增
-        String addResult = clientUtil.addDocuments(INDEX_NAME, TYPE_NAME, docs);//多条新增
+        String addResult = clientInterface.addDocuments(INDEX_NAME, TYPE_NAME, docs);//多条新增
         log.info(addResult);
         return addResult;
     }
 
     @Override
     public String generateTestData() {
-        //生成测试数据,parallel可验证客户端的线程安全性
-        ClientInterface clientUtil = bbossESStarter.getRestClient();
         IntStream.range(0, 1000000).parallel().mapToObj(i ->
                 SqlDemoDoc.builder().demoId(String.valueOf(i)).name("name")
                         .orderId(String.valueOf(i)).contrastStatus(i % 3)
                         .contentbody("contentbody" + i).applicationName("applicationName" + i)
                         .agentStarttime(new Date()).agentStarttimezh(new Date())
                         .build()
-        ).forEach(doc->clientUtil.addDocument(INDEX_NAME, TYPE_NAME, doc));
-
+        ).forEach(doc->clientInterface.addDocument(INDEX_NAME, TYPE_NAME, doc));
         return "";
     }
 
     @Override
     public Boolean delDoc(SqlDemoDocQo doc) {
-        ClientInterface clientUtil = bbossESStarter.getRestClient();
-        clientUtil.deleteDocument(INDEX_NAME, TYPE_NAME, doc.getDemoId());
+        clientInterface.deleteDocument(INDEX_NAME, TYPE_NAME, doc.getDemoId());
         return null;
     }
 
     @Override
     public String updateDocs(List<SqlDemoDocQo> docs) {
-        ClientInterface restClient = bbossESStarter.getRestClient();
-        String updateDocuments = restClient.updateDocuments(INDEX_NAME, TYPE_NAME, docs);
+        String updateDocuments = clientInterface.updateDocuments(INDEX_NAME, TYPE_NAME, docs);
         return updateDocuments;
     }
 
     @Override
     public SqlDemoDoc queryOneDoc(SqlDemoDocQo doc) {
-        ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/demo-sql.xml");//初始化一个加载sql配置文件的es客户端接口
-        //设置sql查询的参数
-        Map params = new HashMap();
-        params.put("channelId", 1);
-        params.put("name", "乔丹");
-        String json = clientUtil.executeHttp("/_xpack/sql", "sqlQuery", params,
-                ClientInterface.HTTP_POST
-        );
+//        ClientInterface clientUtil3 = ElasticSearchHelper.getConfigRestClientUtil("esmapper/demo-sql.xml");//初始化一个加载sql配置文件的es客户端接口
+//        clientUtil3.sql(SqlDemoDoc.class, "{\"query\": \"SELECT * FROM demo\"}",null);
+//        //设置sql查询的参数
+//        Map params = new HashMap();
+//        params.put("orderId", "123456");
+//        params.put("name", "name-test");
+//        String json = clientUtil.executeHttp("/_xpack/sql", "sqlQuery", params,
+//                ClientInterface.HTTP_POST
+//        );
+
+        ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
+        List<Map> json = clientUtil.sql(Map.class, "{\"query\": \"SELECT * FROM demo\"}");
         System.out.println(json);//打印检索结果
         Gson gson = new Gson();
-        SqlDemoDoc sqlDemoDoc = gson.fromJson(json, SqlDemoDoc.class);
-        return sqlDemoDoc;
+//        SqlDemoDoc sqlDemoDoc = gson.fromJson(json, Map.class);
+        return null;
     }
 
     @Override

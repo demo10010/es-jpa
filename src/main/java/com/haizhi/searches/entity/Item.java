@@ -1,5 +1,7 @@
 package com.haizhi.searches.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -33,7 +35,9 @@ public class Item {
     private String images; // 图片地址
 
     @Field(index = false, type = FieldType.Date)
-    private Date date; //
+    @ApiModelProperty(required = true,example = "2020-01-01 12:18:48")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date date;
 
 
 }
