@@ -53,5 +53,10 @@ public class SqlDemoController {
         return sqlDemoService.createIndexAndType(indexName);
     }
 
+    @GetMapping("/generateTestData")
+    @ApiOperation(value = "生成测试数据")
+    public String generateTestData() {
+        return sqlDemoService.generateTestData();
+    }
 
 }

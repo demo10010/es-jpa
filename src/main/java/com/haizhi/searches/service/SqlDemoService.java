@@ -18,4 +18,6 @@ public interface SqlDemoService {
 
     String createIndexAndType(String indexName);
 
+    String generateTestData();
+
 }

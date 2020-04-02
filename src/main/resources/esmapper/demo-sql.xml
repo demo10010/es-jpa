@@ -1,0 +1,10 @@
+<properties>
+    <!--
+        sql query
+    -->
+    <property name="sqlQuery">
+        <![CDATA[
+         {"query": "SELECT * FROM dbclobdemo where channelId=#[channelId] and name='#[name,quoted=false]'"} ##加上quoted=false属性，指示框架不要为字符串加""号，因为sql需要''号
+        ]]>
+    </property>
+</properties>

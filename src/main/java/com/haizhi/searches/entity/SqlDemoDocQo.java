@@ -4,11 +4,17 @@ package com.haizhi.searches.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.frameworkset.orm.annotation.Column;
 import com.frameworkset.orm.annotation.ESId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SqlDemoDocQo{
 //    private Object dynamicPriceTemplate;
     //设定文档标识字段

@@ -1,17 +1,23 @@
 package com.haizhi.searches.service.impl;
 
+import com.google.gson.Gson;
 import com.haizhi.searches.demo.crud.DocumentCRUD;
 import com.haizhi.searches.entity.SqlDemoDoc;
 import com.haizhi.searches.entity.SqlDemoDocQo;
 import com.haizhi.searches.service.SqlDemoService;
 import lombok.extern.slf4j.Slf4j;
 import org.frameworkset.elasticsearch.ElasticSearchException;
+import org.frameworkset.elasticsearch.ElasticSearchHelper;
 import org.frameworkset.elasticsearch.boot.BBossESStarter;
 import org.frameworkset.elasticsearch.client.ClientInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -37,6 +43,21 @@ public class SqlDemoServiceImpl implements SqlDemoService {
     }
 
     @Override
+    public String generateTestData() {
+        //生成测试数据,parallel可验证客户端的线程安全性
+        ClientInterface clientUtil = bbossESStarter.getRestClient();
+        IntStream.range(0, 1000000).parallel().mapToObj(i ->
+                SqlDemoDoc.builder().demoId(String.valueOf(i)).name("name")
+                        .orderId(String.valueOf(i)).contrastStatus(i % 3)
+                        .contentbody("contentbody" + i).applicationName("applicationName" + i)
+                        .agentStarttime(new Date()).agentStarttimezh(new Date())
+                        .build()
+        ).forEach(doc->clientUtil.addDocument(INDEX_NAME, TYPE_NAME, doc));
+
+        return "";
+    }
+
+    @Override
     public Boolean delDoc(SqlDemoDocQo doc) {
         ClientInterface clientUtil = bbossESStarter.getRestClient();
         clientUtil.deleteDocument(INDEX_NAME, TYPE_NAME, doc.getDemoId());
@@ -52,7 +73,18 @@ public class SqlDemoServiceImpl implements SqlDemoService {
 
     @Override
     public SqlDemoDoc queryOneDoc(SqlDemoDocQo doc) {
-        return null;
+        ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/demo-sql.xml");//初始化一个加载sql配置文件的es客户端接口
+        //设置sql查询的参数
+        Map params = new HashMap();
+        params.put("channelId", 1);
+        params.put("name", "乔丹");
+        String json = clientUtil.executeHttp("/_xpack/sql", "sqlQuery", params,
+                ClientInterface.HTTP_POST
+        );
+        System.out.println(json);//打印检索结果
+        Gson gson = new Gson();
+        SqlDemoDoc sqlDemoDoc = gson.fromJson(json, SqlDemoDoc.class);
+        return sqlDemoDoc;
     }
 
     @Override
