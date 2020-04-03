@@ -1,13 +1,11 @@
 package com.haizhi.searches;
 
-import com.haizhi.searches.demo.entity.Demo;
 import org.frameworkset.elasticsearch.ElasticSearchHelper;
 import org.frameworkset.elasticsearch.client.ClientInterface;
 import org.frameworkset.elasticsearch.entity.sql.SQLResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,18 +35,5 @@ public class BBossESStarterTestCase {
 
         System.out.println(json);
     }
-
-    @Test
-    public void testDemoQuery2(){
-        ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/sql.xml");//初始化一个加载sql配置文件的es客户端接口
-        //设置sql查询的参数
-        Map params = new HashMap();
-        params.put("channelId",1);
-        Demo json = clientUtil.sqlObject(Demo.class,"sqlQuery",params);
-        System.out.println(json);
-
-    }
-
-
 
 }

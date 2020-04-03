@@ -35,6 +35,18 @@ public class SqlDemoController {
         return sqlDemoService.updateDocs(docs);
     }
 
+    @PostMapping("/queryBySql")
+    @ApiOperation(value = "单条查询")
+    public SqlDemoDoc queryBySql(@RequestBody SqlDemoDocQo doc) {
+        return sqlDemoService.queryBySql(doc);
+    }
+
+    @PostMapping("/queryByRawSql")
+    @ApiOperation(value = "单条查询")
+    public String queryByRawSql(@RequestBody String sql) {
+        return sqlDemoService.queryByRawSql(sql);
+    }
+
     @PostMapping("/queryOneDoc")
     @ApiOperation(value = "单条查询")
     public SqlDemoDoc queryOneDoc(@RequestBody SqlDemoDocQo doc) {

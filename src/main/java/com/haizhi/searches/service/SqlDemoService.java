@@ -14,6 +14,10 @@ public interface SqlDemoService {
 
     SqlDemoDoc queryOneDoc(SqlDemoDocQo docs);
 
+    SqlDemoDoc queryBySql(SqlDemoDocQo docs);
+
+    String queryByRawSql(String sql);
+
     String queryMultiDocs(List<SqlDemoDocQo> docs);
 
     String createIndexAndType(String indexName);

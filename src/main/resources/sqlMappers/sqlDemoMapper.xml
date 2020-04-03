@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.haizhi.searches.dao.SqlDemoDao">
+    <select id="testSql" >
+      select *  from demo limit 1
+    </select>
+
+    <select id="paramSql" parameterType="com.haizhi.searches.entity.Item">
+      select teacherId  from demo where name = #{name} limit 2
+    </select>
+
+    <select id="paramSqlMap">
+      select teacherId  from demo where name = #{name} limit 3
+    </select>
+</mapper>
