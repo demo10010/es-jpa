@@ -10,8 +10,10 @@ import org.frameworkset.elasticsearch.ElasticSearchException;
 import org.frameworkset.elasticsearch.ElasticSearchHelper;
 import org.frameworkset.elasticsearch.boot.BBossESStarter;
 import org.frameworkset.elasticsearch.client.ClientInterface;
+import org.frameworkset.elasticsearch.entity.ESDatas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class SqlDemoServiceImpl implements SqlDemoService {
                         .contentbody("contentbody" + i).applicationName("applicationName" + i)
                         .agentStarttime(new Date()).agentStarttimezh(new Date())
                         .build()
-        ).forEach(doc->clientInterface.addDocument(INDEX_NAME, TYPE_NAME, doc));
+        ).forEach(doc -> clientInterface.addDocument(INDEX_NAME, TYPE_NAME, doc));
         return "";
     }
 
@@ -85,6 +87,16 @@ public class SqlDemoServiceImpl implements SqlDemoService {
         Gson gson = new Gson();
 //        SqlDemoDoc sqlDemoDoc = gson.fromJson(json, Map.class);
         return null;
+    }
+
+    @Override
+    public String queryByRawSql(String sql) {
+        ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
+        //ESDatas包含当前检索的记录集合，最多10条记录，由sql中的limit属性指定
+        //elasticsearch-sql支持的sql语句
+        ESDatas<Map> esDatas = clientUtil.searchList("/_sql", sql,  Map.class);//返回的文档封装对象类型
+        //获取结果对象列表
+        return esDatas.toString();
     }
 
     @Override

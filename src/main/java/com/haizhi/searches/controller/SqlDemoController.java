@@ -41,6 +41,12 @@ public class SqlDemoController {
         return sqlDemoService.queryOneDoc(doc);
     }
 
+    @PostMapping("/queryByRawSql")
+    @ApiOperation(value = "原始sql查询")
+    public String queryByRawSql(@RequestBody String sql) {
+        return sqlDemoService.queryByRawSql(sql);
+    }
+
     @PostMapping("/queryMultiDoc")
     @ApiOperation(value = "多条查询")
     public String queryMultiDocs(@RequestBody List<SqlDemoDocQo> docs) {
