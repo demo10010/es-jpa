@@ -1,8 +1,8 @@
 package com.haizhi.searches.service.impl;
 
 import com.google.gson.Gson;
-import com.haizhi.searches.component.EsComponent;
 import com.haizhi.searches.dao.SqlDemoDao;
+import com.haizhi.searches.entity.Item;
 import com.haizhi.searches.entity.SqlDemoDoc;
 import com.haizhi.searches.entity.SqlDemoDocQo;
 import com.haizhi.searches.service.SqlDemoService;
@@ -33,8 +33,8 @@ public class SqlDemoServiceImpl implements SqlDemoService {
     @Autowired
     private ClientInterface clientInterface;
 
-    @Autowired
-    private EsComponent esComponent;
+//    @Autowired
+//    private EsComponent esComponent;
 
     @Autowired
     private SqlDemoDao sqlDemoDao;
@@ -55,7 +55,7 @@ public class SqlDemoServiceImpl implements SqlDemoService {
                         .contentbody("contentbody" + i).applicationName("applicationName" + i)
                         .agentStarttime(new Date()).agentStarttimezh(new Date())
                         .build()
-        ).forEach(doc->clientInterface.addDocument(INDEX_NAME, TYPE_NAME, doc));
+        ).forEach(doc -> clientInterface.addDocument(INDEX_NAME, TYPE_NAME, doc));
         return "";
     }
 
@@ -72,8 +72,8 @@ public class SqlDemoServiceImpl implements SqlDemoService {
     }
 
     /**
-     *
      * 基于x-pack sql ,只有一个月试用期，后期需要购买证书
+     *
      * @param doc
      * @return
      */
@@ -90,7 +90,9 @@ public class SqlDemoServiceImpl implements SqlDemoService {
 
     @Override
     public SqlDemoDoc queryBySql(SqlDemoDocQo docs) {
-        Map<String, Object> map = sqlDemoDao.testSql();
+        Item item = new Item();
+        item.setName("自定义参数");
+        String map = sqlDemoDao.paramSql(item);
 
         return null;
     }
@@ -100,9 +102,9 @@ public class SqlDemoServiceImpl implements SqlDemoService {
 //        List<Object> objects = esComponent.queryBySql(sql, Object.class);
         ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
         //ESDatas包含当前检索的记录集合，最多10条记录，由sql中的limit属性指定
-        ESDatas<Map> esDatas =   clientUtil.searchList("/_sql",//sql请求
+        ESDatas<Map> esDatas = clientUtil.searchList("/_sql",//sql请求
                 sql, //elasticsearch-sql支持的sql语句
-                        Map.class);//返回的文档封装对象类型
+                Map.class);//返回的文档封装对象类型
         //获取结果对象列表
         List<Map> demos = esDatas.getDatas();
 

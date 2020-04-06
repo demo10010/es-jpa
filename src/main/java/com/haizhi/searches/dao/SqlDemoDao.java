@@ -1,11 +1,11 @@
 package com.haizhi.searches.dao;
 
+import com.haizhi.searches.annotation.EsRepository;
 import com.haizhi.searches.entity.Item;
-import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 
-@Repository
+@EsRepository
 public interface SqlDemoDao {
     Map<String,Object> testSql();
 
