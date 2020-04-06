@@ -51,7 +51,7 @@ public class SqlDemoServiceImpl implements SqlDemoService {
 
     @Override
     public String generateTestData() {
-        IntStream.range(0, 1000000).parallel().mapToObj(i ->
+        IntStream.range(0, 5000).parallel().mapToObj(i ->
                 SqlDemoDoc.builder().demoId(String.valueOf(i)).name("name")
                         .orderId(String.valueOf(i)).contrastStatus(i % 3)
                         .contentbody("contentbody" + i).applicationName("applicationName" + i)
@@ -94,11 +94,11 @@ public class SqlDemoServiceImpl implements SqlDemoService {
     public SqlDemoDoc queryBySql(SqlDemoDocQo docs) {
         Item item = new Item();
         item.setName("自定义参数");
-        Map<String,Object> param = Maps.newHashMap(BeanMap.create(item));
+        Map<String, Object> param = Maps.newHashMap(BeanMap.create(item));
 
 //        BeanMap beanMap = BeanMap.create(item);
 //        beanMap.putAll(map);
-        String map = sqlDemoDao.paramSql(param);
+        SqlDemoDoc map = sqlDemoDao.paramSql(param);
 
         return null;
     }

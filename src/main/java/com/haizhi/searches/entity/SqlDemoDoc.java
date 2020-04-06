@@ -1,6 +1,5 @@
 package com.haizhi.searches.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.frameworkset.orm.annotation.Column;
 import com.frameworkset.orm.annotation.ESId;
@@ -23,7 +22,9 @@ public class SqlDemoDoc extends ESBaseData {
     @ESId(persistent = false)
     private String demoId;
 
+    @Column(name = "city")
     private String contentbody;
+
     /**
      * 当在mapping定义中指定了日期格式时，则需要指定以下两个注解,例如
      * <p>

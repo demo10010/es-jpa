@@ -17,7 +17,7 @@ public class SwaggerConfig {
     public Docket controllerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("xx公司_xx项目_接口文档")
+                        .title("富滇银行智能知识图谱项目_接口文档")
                         .description("描述内容")
                         .version("2.0.0")
                         .build())

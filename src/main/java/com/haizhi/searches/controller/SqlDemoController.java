@@ -1,5 +1,6 @@
 package com.haizhi.searches.controller;
 
+import com.haizhi.searches.component.ServerResponse;
 import com.haizhi.searches.entity.SqlDemoDoc;
 import com.haizhi.searches.entity.SqlDemoDocQo;
 import com.haizhi.searches.service.SqlDemoService;
@@ -19,56 +20,56 @@ public class SqlDemoController {
 
     @PostMapping("/addDoc")
     @ApiOperation(value = "新增")
-    public String addDoc(@RequestBody List<SqlDemoDocQo> docs) {
-        return sqlDemoService.addDoc(docs);
+    public ServerResponse<String> addDoc(@RequestBody List<SqlDemoDocQo> docs) {
+        return ServerResponse.success(sqlDemoService.addDoc(docs));
     }
 
     @PostMapping("/delDoc")
     @ApiOperation(value = "删除")
-    public Boolean delDoc(@RequestBody SqlDemoDocQo doc) {
-        return sqlDemoService.delDoc(doc);
+    public ServerResponse<Boolean> delDoc(@RequestBody SqlDemoDocQo doc) {
+        return ServerResponse.success(sqlDemoService.delDoc(doc));
     }
 
     @PostMapping("/updateDoc")
     @ApiOperation(value = "修改")
-    public String updateDoc(@RequestBody List<SqlDemoDocQo> docs) {
-        return sqlDemoService.updateDocs(docs);
+    public ServerResponse<String> updateDoc(@RequestBody List<SqlDemoDocQo> docs) {
+        return ServerResponse.success(sqlDemoService.updateDocs(docs));
     }
 
     @PostMapping("/queryBySql")
     @ApiOperation(value = "单条查询")
-    public SqlDemoDoc queryBySql(@RequestBody SqlDemoDocQo doc) {
-        return sqlDemoService.queryBySql(doc);
+    public ServerResponse<SqlDemoDoc> queryBySql(@RequestBody SqlDemoDocQo doc) {
+        return ServerResponse.success(sqlDemoService.queryBySql(doc));
     }
 
     @PostMapping("/queryByRawSql")
     @ApiOperation(value = "单条查询")
-    public String queryByRawSql(@RequestBody String sql) {
-        return sqlDemoService.queryByRawSql(sql);
+    public ServerResponse<String> queryByRawSql(@RequestBody String sql) {
+        return ServerResponse.success(sqlDemoService.queryByRawSql(sql));
     }
 
     @PostMapping("/queryOneDoc")
     @ApiOperation(value = "单条查询")
-    public SqlDemoDoc queryOneDoc(@RequestBody SqlDemoDocQo doc) {
-        return sqlDemoService.queryOneDoc(doc);
+    public ServerResponse<SqlDemoDoc> queryOneDoc(@RequestBody SqlDemoDocQo doc) {
+        return ServerResponse.success(sqlDemoService.queryOneDoc(doc));
     }
 
     @PostMapping("/queryMultiDoc")
     @ApiOperation(value = "多条查询")
-    public String queryMultiDocs(@RequestBody List<SqlDemoDocQo> docs) {
-        return sqlDemoService.queryMultiDocs(docs);
+    public ServerResponse<String> queryMultiDocs(@RequestBody List<SqlDemoDocQo> docs) {
+        return ServerResponse.success(sqlDemoService.queryMultiDocs(docs));
     }
 
     @PostMapping("/createIndexAndType")
     @ApiOperation(value = "创建索引及type，设置setting和mapping")
-    public String createIndexAndType(String indexName) {
-        return sqlDemoService.createIndexAndType(indexName);
+    public ServerResponse<String> createIndexAndType(String indexName) {
+        return ServerResponse.success(sqlDemoService.createIndexAndType(indexName));
     }
 
     @GetMapping("/generateTestData")
     @ApiOperation(value = "生成测试数据")
-    public String generateTestData() {
-        return sqlDemoService.generateTestData();
+    public ServerResponse<String> generateTestData() {
+        return ServerResponse.success(sqlDemoService.generateTestData());
     }
 
 }

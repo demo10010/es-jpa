@@ -1,6 +1,7 @@
 package com.haizhi.searches.dao;
 
 import com.haizhi.searches.annotation.EsRepository;
+import com.haizhi.searches.entity.SqlDemoDoc;
 
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import java.util.Map;
 public interface SqlDemoDao {
     Map<String,Object> testSql();
 
-    String paramSql(Map<String,Object> item);
+    SqlDemoDoc paramSql(Map<String,Object> param);
 
     String paramSqlMap(Map<String, Object> apiName);
 }

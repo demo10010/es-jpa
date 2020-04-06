@@ -1,5 +1,6 @@
 package com.haizhi.searches.controller;
 
+import com.haizhi.searches.component.ServerResponse;
 import com.haizhi.searches.entity.Item;
 import com.haizhi.searches.service.JpaDemoService;
 import io.swagger.annotations.Api;
@@ -20,39 +21,39 @@ public class JpaDemoController {
 
     @GetMapping("getAllItem")
     @ApiOperation(value = "查询全部")
-    public String getAllItem() {
-        return jpaDemoService.getAllItem();
+    public ServerResponse<String> getAllItem() {
+        return ServerResponse.success(jpaDemoService.getAllItem());
     }
 
     @GetMapping("getItemById/{id}")
     @ApiOperation(value = "根据id进行查询")
-    public String getItemById(@PathVariable Long id) {
-        return jpaDemoService.getItemById(id);
+    public ServerResponse<String> getItemById(@PathVariable Long id) {
+        return ServerResponse.success(jpaDemoService.getItemById(id));
     }
 
     @GetMapping("getItemPage/{name}")
     @ApiOperation(value = "根据id进行查询")
-    public Page<Item> getItemPage(@PathVariable String name) {
-        return jpaDemoService.getItemPage(name);
+    public ServerResponse<Page<Item>> getItemPage(@PathVariable String name) {
+        return ServerResponse.success(jpaDemoService.getItemPage(name));
     }
 
     @GetMapping("findBySql")
     @ApiOperation(value = "根据id进行查询")
-    public List<Item> findBySql() {
-        return jpaDemoService.findBySql();
+    public ServerResponse<List<Item>> findBySql() {
+        return ServerResponse.success(jpaDemoService.findBySql());
     }
 
 
     @PostMapping("saveItems")
     @ApiOperation(value = "保存文档")
-    public String saveItems(@RequestBody List<Item> items) {
-        return jpaDemoService.saveItems(items);
+    public ServerResponse<String> saveItems(@RequestBody List<Item> items) {
+        return ServerResponse.success(jpaDemoService.saveItems(items));
     }
 
     @GetMapping("createIndex")
     @ApiOperation(value = "创建索引及type")
-    public boolean createIndex() {
-        return jpaDemoService.createIndex();
+    public ServerResponse<Boolean> createIndex() {
+        return ServerResponse.success(jpaDemoService.createIndex());
     }
 
 }

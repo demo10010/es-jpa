@@ -1,21 +1,14 @@
-package com.haizhi.searches.annotation;
+package com.haizhi.searches.proxy;
 
 import com.haizhi.searches.util.EsSqlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
-import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.Configuration;
-import org.frameworkset.util.io.ClassPathResource;
-import org.frameworkset.util.io.PathMatchingResourcePatternResolver;
-import org.frameworkset.util.io.Resource;
-import org.frameworkset.util.io.ResourcePatternResolver;
 import org.springframework.beans.factory.FactoryBean;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -48,7 +41,6 @@ public class EsRepositoryProxyFactoryBean<T> implements FactoryBean {
             return method.invoke(this, args);
         }
         Class<?> returnType = method.getReturnType();
-        System.out.println(returnType.getTypeName());
         String methodName = method.getName();
         String methodId = method.getDeclaringClass().getName() + "." + methodName;
         Object result;//参数最多一个，多个可用 Map
@@ -93,32 +85,6 @@ public class EsRepositoryProxyFactoryBean<T> implements FactoryBean {
     @Override
     public boolean isSingleton() {
         return true;
-    }
-
-
-    private void nnnn() throws IOException {
-        Configuration configuration = new Configuration();
-        //TODO XML文件与接口绑定待处理
-
-        InputStream inputStream = new ClassPathResource("sqlMappers\\sqlDemoMapper.xml").getInputStream();
-//            FileInputStream inputStream = new FileInputStream("D:\\");
-
-//        File file = new File("src/main/resources/properties/test.properties");
-//        InputStream in = new FileInputStream(file);
-        ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = patternResolver.getResources("mybatis-conf.xml");//  等价于 classpath:*
-
-        for (int i = 0; i < resources.length; i++) {
-            File file = resources[i].getFile();
-            String uri = resources[i].getURI().getPath();
-            String url = resources[i].getURL().getPath();
-            String canonicalPath = file.getCanonicalPath();
-            String resource = file.getAbsolutePath();
-            configuration.addLoadedResource(resource);
-        }
-
-        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(inputStream, configuration, "sqlMappers\\sqlDemoMapper.xml", configuration.getSqlFragments());
-        xmlMapperBuilder.parse();
     }
 
 }

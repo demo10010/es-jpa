@@ -1,5 +1,6 @@
-package com.haizhi.searches.annotation;
+package com.haizhi.searches.proxy;
 
+import com.haizhi.searches.annotation.EsRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -20,7 +21,6 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -47,7 +47,8 @@ public class EsRepositoryBeanDefinitionRegistry implements BeanDefinitionRegistr
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         //这里一般我们是通过反射获取需要代理的接口的clazz列表
         //比如判断包下面的类，或者通过某注解标注的类等等
-        String basePackage = getEnvironment().getProperty(ELASTICSEARCH_REPOSITORY_PACKAGE);
+        Environment environment = getEnvironment();
+        String basePackage = environment.getProperty(ELASTICSEARCH_REPOSITORY_PACKAGE);
         Assert.hasLength(basePackage, "未添加es代理接口的包路劲,需要请添加参数 elasticsearch.repository.package");
 
         Set<Class<?>> beanClazzs = scannerPackages(basePackage);
@@ -114,7 +115,7 @@ public class EsRepositoryBeanDefinitionRegistry implements BeanDefinitionRegistr
      * 根据包路径获取包及子包下的所有类
      *
      * @param basePackage basePackage
-     * @return Set<Class       <       ?>>
+     * @return Set<Class   <   ?>>
      */
     private Set<Class<?>> scannerPackages(String basePackage) {
         Set<Class<?>> set = new LinkedHashSet<>();
