@@ -1,5 +1,6 @@
 package com.haizhi.searches.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -20,8 +21,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
+@Slf4j
 public class EsSqlUtil {
-    private static ClientInterface restClient = ElasticSearchHelper.getRestClientUtil();
+
+    private static ThreadLocal<SimpleDateFormat> dateTimeFormatter = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
+    private static final String ES_SQL_PATH = "/_sql";
 
     /**
      * @param sql
@@ -30,20 +35,19 @@ public class EsSqlUtil {
      * @return 三种类型 ESDatas  》》  List<T>    》》 T
      */
     public static <T> Object doSearch(String sql, Class<T> returnType) {
-        System.out.println(returnType.getName());
+        log.info(returnType.getName());
         ESDatas<T> esDatas;//返回的文档封装对象类型
+        ClientInterface restClient = ElasticSearchHelper.getRestClientUtil();
         if (ESDatas.class.equals(returnType)) {
-            esDatas = restClient.searchList("/_sql", sql, returnType);
+            esDatas = restClient.searchList(ES_SQL_PATH, sql, returnType);
             return esDatas;
         }
         if (List.class.equals(returnType)) {
-            esDatas = restClient.searchList("/_sql", sql, returnType);
+            esDatas = restClient.searchList(ES_SQL_PATH, sql, returnType);
             return esDatas.getDatas();
         }
-        return restClient.searchObject("/_sql", sql, returnType);
+        return restClient.searchObject(ES_SQL_PATH, sql, returnType);
     }
-
-    private static ThreadLocal<SimpleDateFormat> dateTimeFormatter = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     /**
      * 获取完整的sql语句

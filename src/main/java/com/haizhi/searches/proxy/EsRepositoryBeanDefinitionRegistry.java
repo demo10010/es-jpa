@@ -54,7 +54,6 @@ public class EsRepositoryBeanDefinitionRegistry implements BeanDefinitionRegistr
         Set<Class<?>> beanClazzs = scannerPackages(basePackage);
         for (Class beanClazz : beanClazzs) {
             Annotation[] annotations = beanClazz.getAnnotations();
-//            Annotation[] declaredAnnotations = beanClazz.getDeclaredAnnotations();
             for (int i = 0; i < annotations.length; i++) {
                 //含有EsRepository注解的才生产代理对象
                 Boolean hasAnnotation = EsRepository.class.equals(annotations[i].annotationType());

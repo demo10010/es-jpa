@@ -84,9 +84,7 @@ public class SqlDemoServiceImpl implements SqlDemoService {
     public SqlDemoDoc queryOneDoc(SqlDemoDocQo doc) {
         ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
         List<Map> json = clientUtil.sql(Map.class, "{\"query\": \"SELECT * FROM demo\"}");
-        System.out.println(json);//打印检索结果
-        Gson gson = new Gson();
-//        SqlDemoDoc sqlDemoDoc = gson.fromJson(json, Map.class);
+        log.info(json.toString());//打印检索结果
         return null;
     }
 
@@ -96,8 +94,6 @@ public class SqlDemoServiceImpl implements SqlDemoService {
         item.setName("自定义参数");
         Map<String, Object> param = Maps.newHashMap(BeanMap.create(item));
 
-//        BeanMap beanMap = BeanMap.create(item);
-//        beanMap.putAll(map);
         SqlDemoDoc map = sqlDemoDao.paramSql(param);
 
         return null;
@@ -113,7 +109,6 @@ public class SqlDemoServiceImpl implements SqlDemoService {
                 Map.class);//返回的文档封装对象类型
         //获取结果对象列表
         List<Map> demos = esDatas.getDatas();
-
 
         return esDatas.toString();
     }
@@ -143,42 +138,12 @@ public class SqlDemoServiceImpl implements SqlDemoService {
             clientUtil.createIndiceMapping(INDEX_NAME, "createDemoIndice");//索引表mapping dsl脚本名称，在esmapper/demo.xml中定义createDemoIndice
 
             String demoIndice = clientUtil.getIndice(INDEX_NAME);//获取最新建立的索引表结构
-            System.out.println(demoIndice);
+            log.debug(demoIndice);
         } catch (ElasticSearchException e) {
             e.printStackTrace();
         }
 
         return null;
-    }
-
-    public String testIndixCurd() throws Exception {
-        //判读索引是否存在，false表示不存在，正常返回true表示存在
-        boolean existIndice = bbossESStarter.getRestClient().existIndice("twitter");
-        boolean existIndiceType = bbossESStarter.getRestClient().existIndiceType("twitter", "tweet");
-        return "";
-    }
-
-    public void testBbossESStarter() throws Exception {
-        //验证环境,获取es状态
-//        String response = serviceApiUtil.restClient().executeHttp("_cluster/state?pretty",ClientInterface.HTTP_GET);
-
-//        System.out.println(response);
-        //判断索引类型是否存在，false表示不存在，正常返回true表示存在
-        boolean exist = bbossESStarter.getRestClient().existIndiceType("twitter", "tweet");
-
-        //判读索引是否存在，false表示不存在，正常返回true表示存在
-        exist = bbossESStarter.getRestClient().existIndice("twitter");
-
-        exist = bbossESStarter.getRestClient().existIndice("agentinfo");
-
-    }
-
-    public void testPerformaceCRUD() throws Exception {
-
-//        //删除/创建文档索引表
-//        documentCRUD.testCreateIndice();
-//
-//        documentCRUD.testBulkAddDocuments();
     }
 
 }

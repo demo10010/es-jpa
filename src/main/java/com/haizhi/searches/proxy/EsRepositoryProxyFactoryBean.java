@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-@Slf4j
+//@Slf4j
 public class EsRepositoryProxyFactoryBean<T> implements FactoryBean {
     //被代理的接口Class对象
     private Class<T> interfaceType;

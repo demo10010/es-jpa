@@ -6,10 +6,10 @@
     </select>
 
     <select id="paramSql" parameterType="java.util.Map">
-      select company,name  from enterprise_data_gov_20191025 limit 1
+      select  *  from item limit 1
     </select>
 
     <select id="paramSqlMap">
-      select *  from enterprise_data_gov_20191025 where name = #{name} limit 3
+     select  *  from item where name = #{name} limit 3
     </select>
 </mapper>
