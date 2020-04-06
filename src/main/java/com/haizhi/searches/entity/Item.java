@@ -22,6 +22,10 @@ public class Item {
     @Field(type = FieldType.Keyword)
     private String name;
 
+    public String getName() {
+        return name;
+    }
+
     @Field(type = FieldType.Keyword)
     private String category;// 分类
 
@@ -38,6 +42,5 @@ public class Item {
     @ApiModelProperty(required = true,example = "2020-01-01 12:18:48")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
-
 
 }

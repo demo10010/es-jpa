@@ -5,7 +5,7 @@
       select *  from demo limit 1
     </select>
 
-    <select id="paramSql" parameterType="com.haizhi.searches.entity.Item" resultType="com.haizhi.searches.entity.SqlDemoDoc">
+    <select id="paramSql" parameterType="java.util.Map"  resultType="com.haizhi.searches.entity.SqlDemoDoc">
       select teacherId  from demo where name = #{name} limit 2
     </select>
 

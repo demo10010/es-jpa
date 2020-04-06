@@ -1,27 +1,26 @@
 package com.haizhi.searches.annotation;
 
-import com.google.gson.Gson;
+import com.haizhi.searches.util.EsSqlUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.session.*;
-import org.frameworkset.elasticsearch.ElasticSearchHelper;
-import org.frameworkset.elasticsearch.client.ClientInterface;
-import org.frameworkset.elasticsearch.entity.ESDatas;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.session.Configuration;
 import org.frameworkset.util.io.ClassPathResource;
+import org.frameworkset.util.io.PathMatchingResourcePatternResolver;
+import org.frameworkset.util.io.Resource;
+import org.frameworkset.util.io.ResourcePatternResolver;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.CollectionUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+@Slf4j
 public class EsRepositoryProxyFactoryBean<T> implements FactoryBean {
     //被代理的接口Class对象
     private Class<T> interfaceType;
@@ -45,79 +44,46 @@ public class EsRepositoryProxyFactoryBean<T> implements FactoryBean {
      * @throws Throwable
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-//        if (Object.class.equals(method.getDeclaringClass())) {
-//            return method.invoke(this, args);
-//        }
+        if (Object.class.equals(method.getDeclaringClass())) {
+            return method.invoke(this, args);
+        }
         Class<?> returnType = method.getReturnType();
-
-        Configuration configuration = new Configuration();
-        //TODO XML文件与接口绑定待处理
-
-        InputStream inputStream = new ClassPathResource("sqlMappers\\sqlDemoMapper.xml").getInputStream();
-//            FileInputStream inputStream = new FileInputStream("D:\\");
-        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(inputStream, configuration, "sqlMappers\\sqlDemoMapper.xml", configuration.getSqlFragments());
-
-        xmlMapperBuilder.parse();
-        MappedStatement paramSql = configuration.getMappedStatement(method.getName());//paramSql
-        if (paramSql.getResultMaps() == null){
-            System.err.println("未配置返回值类型 resultType ");
+        System.out.println(returnType.getTypeName());
+        String methodName = method.getName();
+        String methodId = method.getDeclaringClass().getName() + "." + methodName;
+        Object result;//参数最多一个，多个可用 Map
+        if (args == null) {
+            result = doInvoke(methodId, null, returnType);
+        } else {
+            if (args != null && args.length > 1) {
+                throw new Exception("多参数暂不支持,请使用 Map 传入");//TODO 多参数暂不支持,可通过 Map 传入
+            } else {
+                result = doInvoke(methodId, args[0], returnType);
+            }
         }
-        Class<?> type = paramSql.getResultMaps().get(0).getType();
-
-        String sql = paramSql.getBoundSql(args).getSql();
-        System.out.println(sql);
-
-        ClientInterface restClient = ElasticSearchHelper.getRestClientUtil();
-        ESDatas<?> esDatas = restClient.searchList("/_sql", sql, type);//返回的文档封装对象类型
-        Gson gson = new Gson();
-        String json = gson.toJson(args);// TODO demo处理方式为将传入参数转为json字符串返回
-        System.out.println("调用后，结果：{}" + esDatas);
-        return esDatas;
+        return result;
     }
 
-    private static SqlSessionFactory getSessionFactory() {
-        SqlSessionFactory sessionFactory = null;
-        //配置文件名称
-        String resource = "configuration.xml";
-        try {
-            //使用配置文件构造SqlSessionFactory
-            sessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsReader(resource));
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
+    private static Object doInvoke(String methodId, Object parameterObject, Class<?> returnType) throws Exception {
+        InputStream confInput = new org.springframework.core.io.ClassPathResource("mybatis-conf.xml").getInputStream();// TODO 路径修改
+        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder(confInput);
+        Configuration configuration = xmlConfigBuilder.parse();
 
-        //2，获取SqlSession
-        SqlSession sqlSession = sessionFactory.openSession();
+        MappedStatement mappedStatement = configuration.getMappedStatement(methodId);//
 
-        Collection<MappedStatement> mappedStatements = sqlSession.getConfiguration().getMappedStatements();
-        mappedStatements.forEach(mappedStatement -> {
-            getSql(mappedStatement,null);
-        });
-
-
-        //3，获取UserDao代理类
-//        UserDao userMapper = sqlSession.getMapper(UserDao.class);
-//        //4，执行查询
-//        User user = userMapper.findUserById(1);
-//        Assert.assertNotNull("not find", user);
-
-        return sessionFactory;
-    }
-
-    private static String getSql(MappedStatement mappedStatement, Object parameterObject) {
-//        List<ResultMap> resultMaps = mappedStatement.getResultMaps();
         BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
-        Configuration configuration = mappedStatement.getConfiguration();
+        Configuration mappedStatementConfiguration = mappedStatement.getConfiguration();
 
-        String sql = doGetSql(configuration, boundSql);
-        return sql;
+        String sql = EsSqlUtil.getSql(mappedStatementConfiguration, boundSql);
+
+        SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();//判断操作类型 TODO 目前仅支持查询
+        switch (sqlCommandType) {
+            case SELECT:
+                return EsSqlUtil.doSearch(sql, returnType);
+            default:
+                throw new RuntimeException("暂不支持的操作类型");
+        }
     }
-
-    private static String doGetSql(Configuration configuration, BoundSql boundSql) {
-        return "";
-    }
-
 
     @Override
     public Class<T> getObjectType() {
@@ -127,6 +93,32 @@ public class EsRepositoryProxyFactoryBean<T> implements FactoryBean {
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+
+    private void nnnn() throws IOException {
+        Configuration configuration = new Configuration();
+        //TODO XML文件与接口绑定待处理
+
+        InputStream inputStream = new ClassPathResource("sqlMappers\\sqlDemoMapper.xml").getInputStream();
+//            FileInputStream inputStream = new FileInputStream("D:\\");
+
+//        File file = new File("src/main/resources/properties/test.properties");
+//        InputStream in = new FileInputStream(file);
+        ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = patternResolver.getResources("mybatis-conf.xml");//  等价于 classpath:*
+
+        for (int i = 0; i < resources.length; i++) {
+            File file = resources[i].getFile();
+            String uri = resources[i].getURI().getPath();
+            String url = resources[i].getURL().getPath();
+            String canonicalPath = file.getCanonicalPath();
+            String resource = file.getAbsolutePath();
+            configuration.addLoadedResource(resource);
+        }
+
+        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(inputStream, configuration, "sqlMappers\\sqlDemoMapper.xml", configuration.getSqlFragments());
+        xmlMapperBuilder.parse();
     }
 
 }
