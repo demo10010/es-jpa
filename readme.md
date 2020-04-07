@@ -6,3 +6,5 @@ https://github.com/NLPchina/elasticsearch-sql
 #####  4.1定义接口，并添加注解 @EsRepository
 #####  4.2在 resources\sqlMappers 目录下编写对应xml文件，基于mybatis语法，
 #####  4.3在 mybatis-conf.xml 添加对应的XML文件(mapper)的路径
+### 5.BBOSS教程见 https://esdoc.bbossgroups.com/
+### 6.ES-JPA官方文档 https://docs.spring.io/spring-data/elasticsearch/docs/3.2.6.RELEASE/api/

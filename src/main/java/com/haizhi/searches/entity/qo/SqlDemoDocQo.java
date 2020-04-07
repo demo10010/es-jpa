@@ -1,4 +1,4 @@
-package com.haizhi.searches.entity;
+package com.haizhi.searches.entity.qo;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

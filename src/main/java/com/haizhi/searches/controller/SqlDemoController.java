@@ -2,7 +2,7 @@ package com.haizhi.searches.controller;
 
 import com.haizhi.searches.component.ServerResponse;
 import com.haizhi.searches.entity.SqlDemoDoc;
-import com.haizhi.searches.entity.SqlDemoDocQo;
+import com.haizhi.searches.entity.qo.SqlDemoDocQo;
 import com.haizhi.searches.service.SqlDemoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

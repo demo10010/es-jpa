@@ -1,7 +1,7 @@
 package com.haizhi.searches.service;
 
 import com.haizhi.searches.entity.SqlDemoDoc;
-import com.haizhi.searches.entity.SqlDemoDocQo;
+import com.haizhi.searches.entity.qo.SqlDemoDocQo;
 
 import java.util.List;
 

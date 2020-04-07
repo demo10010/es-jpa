@@ -1,11 +1,10 @@
 package com.haizhi.searches.service.impl;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import com.haizhi.searches.dao.SqlDemoDao;
 import com.haizhi.searches.entity.Item;
 import com.haizhi.searches.entity.SqlDemoDoc;
-import com.haizhi.searches.entity.SqlDemoDocQo;
+import com.haizhi.searches.entity.qo.SqlDemoDocQo;
 import com.haizhi.searches.service.SqlDemoService;
 import lombok.extern.slf4j.Slf4j;
 import org.frameworkset.elasticsearch.ElasticSearchException;
