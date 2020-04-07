@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * TODO  增删改使用bboss客户端，查询可使用@EsRepository注解(基于mybatis解析xml文件生成对应sql ，通过Es-sql插件查询结果 )
+ */
 @RestController
 @Api(description = "bboss demo工程")
 @RequestMapping("/testSql")
