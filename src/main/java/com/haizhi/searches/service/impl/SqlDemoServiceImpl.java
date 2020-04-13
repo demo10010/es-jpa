@@ -106,9 +106,6 @@ public class SqlDemoServiceImpl implements SqlDemoService {
         ESDatas<Map> esDatas = clientUtil.searchList("/_sql",//sql请求
                 sql, //elasticsearch-sql支持的sql语句
                 Map.class);//返回的文档封装对象类型
-        //获取结果对象列表
-        List<Map> demos = esDatas.getDatas();
-
         return esDatas.toString();
     }
 

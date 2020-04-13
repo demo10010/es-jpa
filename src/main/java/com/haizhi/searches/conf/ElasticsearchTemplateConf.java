@@ -28,10 +28,13 @@ public class ElasticsearchTemplateConf {
     @Value("${elasticsearch.cluster-name}")
     private String clusterName;
 
+    @Value("${elasticsearch.tcpPort}")
+    private int tcpPort;
+
     @Autowired
     private BBossESStarter bbossESStarter;
 
-    private static final int tcpPort = 9300;
+//    private static final int tcpPort = 9300;
 
     @Bean
     public TransportClient getTcClient() {
